@@ -1,0 +1,19 @@
+ {
+  "name": "museum-scanner-proxy",
+  "version": "1.0.0",
+  "description": "Proxy server for Museum Scanner app to communicate with n8n",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["proxy", "n8n", "museum", "ocr"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "cors": "^2.8.5"
+  }
+}
