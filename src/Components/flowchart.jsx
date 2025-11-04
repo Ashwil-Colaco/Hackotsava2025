@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
-
 // Firebase will be loaded from CDN and available globally
 let db = null;
 
@@ -97,22 +96,26 @@ export default function MuseumFlowchart() {
         ...doc.data()
       }));
 
-      const processed = artifacts.map((a) => ({
+      console.log('Raw artifacts from Firebase:', artifacts);
+
+      // Map the artifacts to match the expected format
+      const processed = artifacts.map((a, index) => ({
         id: a.id,
-        parentId: parseInt(a.no),
-        slotNo: parseInt(a.slot || 1),
-        title: a.Title,
-        name: a['artifact Name'] || a.Title,
-        desc: a['Short Description'] || '',
-        story: a.Story || '',
-        recommendations: a.Recommendations || ''
+        parentId: parseInt(a.no) || 1,
+        slotNo: (index % 9) + 1, // Distribute across slots 1-9
+        title: a.title || 'Unknown Artifact',
+        name: a.title || 'Unknown Artifact',
+        desc: a.shortDescription || '',
+        story: a.story || '',
+        recommendations: a.recommendations || ''
       }));
 
+      console.log('Processed artifacts:', processed);
       setArtifactNodes(processed);
       setLoading(false);
     } catch (err) {
-      console.error(err);
-      setError('Failed to load artifacts.');
+      console.error('Error loading artifacts:', err);
+      setError('Failed to load artifacts: ' + err.message);
       setLoading(false);
     }
   };
@@ -238,7 +241,9 @@ export default function MuseumFlowchart() {
             </svg>
           </button>
         </div>
-        <div><Link to="/">Home</Link></div>
+        <div className="mt-2">
+          <Link to="/" className="text-blue-400 hover:text-blue-300 text-sm font-semibold">← Back to Home</Link>
+        </div>
       </div>
 
       {/* Loading State */}
@@ -294,6 +299,14 @@ export default function MuseumFlowchart() {
           </div>
         </div>
       </div>
+
+      {/* Debug Info */}
+      {!loading && (
+        <div className="absolute top-20 md:top-24 right-4 z-20 bg-slate-800/95 backdrop-blur-sm rounded-xl p-3 shadow-2xl border border-white/10 text-white text-xs">
+          <p className="font-semibold mb-1">Debug Info:</p>
+          <p>Artifacts loaded: {artifactNodes.length}</p>
+        </div>
+      )}
 
       {/* Workspace */}
       <div
@@ -393,7 +406,6 @@ export default function MuseumFlowchart() {
                   const artifact = artifactNodes.find(
                     (a) => a.parentId === main.id && a.slotNo === i + 1
                   );
-                  const parentNode = getParentNode(main.id);
                   return (
                     <div
                       key={`${main.id}-artifact-${i}`}
