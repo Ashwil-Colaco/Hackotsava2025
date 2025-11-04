@@ -132,11 +132,9 @@ const extracted = {
   return (
     <div className="min-h-screen bg-[#1B1B1F] pb-8">
       {/* Header */}
-      <div className="bg-white bg-opacity-95 p-5 shadow-lg sticky top-0 z-50 rounded-b-3xl">
-        <div className="flex">
-        <h1 className="text-3xl font-extrabold text-center text-black mb-5 text-shadow-2xl mx-auto">Muse Scanner</h1>
-        </div>
-        <p className="mt-2 text-sm text-gray-600 text-center mb-2">
+      <div className="bg-[#1b1b1f] bg-opacity-95 p-5 shadow-lg sticky top-0 z-50 rounded-b-3xl">
+        <h1 className="text-3xl font-extrabold text-center text-white mb-5 text-shadow-2xl mx-auto">Muse Scanner</h1>
+        <p className="mt-2 text-sm text-gray-100 text-center mb-2">
           Enter artifact text to unlock their hidden stories
         </p>
 
@@ -145,15 +143,15 @@ const extracted = {
       </div>
       <div className="bg-white w-[6%] max-sm:w-[25%] py-2 px-2.5 mx-auto rounded-xl text-black font-bold hover:bg-black hover:text-white mt-5"><Link to="/flowchart">Flowchart</Link></div>
       {/* Body */}
-      <div className="bg-white m-5 rounded-3xl shadow-2xl overflow-hidden p-5 border border-black w-5/6 max-sm:w-full mx-auto">
+      <div className="bg-slate-800 mt-5 rounded-3xl shadow-2xl overflow-hidden p-5 border border-white max-sm:w-5/6 mx-auto px-5 text-white">
         {/* Input Section */}
         <div className="mb-4">
-          <label className="text-gray-700 font-semibold mb-2 flex justify-center text-md">Artifact Text</label>
+          <label className="text-white font-semibold mb-2 flex justify-center text-md">Artifact Text</label>
           <textarea
             value={inputText}
             onChange={handleInputChange}
             placeholder="Type the artifact name or text here..."
-            className="w-full h-32 p-4 border-2 border-indigo-300 rounded-xl focus:border-indigo-500 focus:outline-none resize-none text-gray-800"
+            className="w-full h-32 p-4 border-2 rounded-xl border-indigo-100 focus:border-indigo-500 focus:outline-none resize-none text-white"
           />
         </div>
         
