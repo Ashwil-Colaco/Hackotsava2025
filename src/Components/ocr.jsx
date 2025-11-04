@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import flowchart from './flowchart';
+import { Link } from "react-router-dom";
 
 // ⚙️ CONFIGURATION - Your ngrok URL
 const API_PROXY_URL = "https://preanaphoral-arya-unthanked.ngrok-free.dev/api/artifact";
@@ -118,13 +120,14 @@ const extracted = {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 pb-8">
+    <div className="min-h-screen bg-linear-to-br from-indigo-600 to-purple-700 pb-8">
       {/* Header */}
       <div className="bg-white bg-opacity-95 p-5 shadow-lg sticky top-0 z-50 rounded-b-3xl">
         <h1 className="text-3xl font-extrabold text-center text-indigo-700">🏛️ Museum Scanner</h1>
         <p className="mt-2 text-sm text-gray-600 text-center">
           Enter artifact text to unlock their hidden stories
         </p>
+        <div className="ml-25"><Link to="/flowchart">Flowchart</Link></div>
       </div>
 
       {/* Body */}

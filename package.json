@@ -16,6 +16,7 @@
     "express": "^5.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-router-dom": "^7.9.5",
     "tailwindcss": "^4.1.16",
     "tesseract.js": "^6.0.1"
   },
@@ -30,6 +31,4 @@
     "globals": "^16.4.0",
     "vite": "^7.1.7"
   }
-
- 
 }
