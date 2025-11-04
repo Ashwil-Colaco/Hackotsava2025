@@ -8,74 +8,6 @@ import {Send} from 'lucide-react';
 // ⚙️ CONFIGURATION - Your ngrok URL
 const API_PROXY_URL = "https://preanaphoral-arya-unthanked.ngrok-free.dev/api/artifact";
 
-// ✅ Firebase initialization (only runs once)
-const initFirebase = async () => {
-  const { initializeApp } = await import('https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js');
-  const { getFirestore } = await import('https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js');
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDdWmdvkQYjEnOa9kcmWqQTdaCw2KLw6Iw",
-    authDomain: "flowchart-c5446.firebaseapp.com",
-    projectId: "flowchart-c5446",
-    storageBucket: "flowchart-c5446.firebasestorage.app",
-    messagingSenderId: "570992052076",
-    appId: "1:570992052076:web:fcc2b8702e45cb438f5549",
-    measurementId: "G-ZMGRCRVFFJ"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  return getFirestore(app);
-};
-
-// ✅ Function to add parsed artifact
-const addArtifact = async (parsed) => {
-  // Extract fields safely from parsed JSON
-  const extracted = {
-    no: parsed["no"] || parsed.no || "1",
-    title: parsed["artifact Name"] || parsed.Title || "Unknown Artifact",
-    shortDescription: parsed["Short Description"] || parsed.ShortDescription || "No description available",
-    story: parsed["Story"] || "No story available",
-    recommendations: parsed["Recommendations"] || "No recommendations available",
-  };
-
-  console.log("Extracted artifact:", extracted);
-
-  try {
-    const firestore = await initFirebase();
-    const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js');
-    
-    const artifactsCollection = collection(firestore, 'artifacts');
-    const docRef = await addDoc(artifactsCollection, extracted);
-
-    console.log("✅ Artifact added with ID:", docRef.id);
-    return { id: docRef.id, ...extracted };
-  } catch (error) {
-    console.error("❌ Error adding artifact:", error);
-    throw error;
-  }
-};
-
-// ✅ Load all artifacts (for reference)
-const loadArtifacts = async () => {
-  try {
-    const firestore = await initFirebase();
-    const { collection, getDocs } = await import('https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js');
-
-    const artifactsCollection = collection(firestore, 'artifacts');
-    const snapshot = await getDocs(artifactsCollection);
-
-    const artifacts = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
-    console.log("Loaded artifacts:", artifacts);
-    return artifacts;
-  } catch (error) {
-    console.error("❌ Error loading artifacts:", error);
-  }
-};
-
 // 🎧 Audio Button Component
 const AudioButton = ({ text }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -168,14 +100,18 @@ const MuseumApp = () => {
 
       if (!response.ok) throw new Error(data.error || `Server returned ${response.status}`);
 
-      // ✅ Parse the response
+      // ✅ Extract relevant fields only
       const parsed = JSON.parse(data[0].output);
 
-      // ✅ Add to Firebase and get the extracted data back
-      const artifactWithId = await addArtifact(parsed);
-      
-      setArtifactData(artifactWithId);
-      setSendStatus("✅ Artifact data fetched and saved successfully!");
+const extracted = {
+  title: parsed["artifact Name"] || parsed.Title || "Unknown Artifact",
+  shortDescription: parsed["Short Description"] || parsed.ShortDescription || "No description available",
+  story: parsed["Story"] || "No story available",
+  recommendations: parsed["Recommendations"] || "No recommendations available",
+};
+
+      setArtifactData(extracted);
+      setSendStatus("✅ Artifact data fetched successfully!");
     } catch (error) {
       console.error(error);
       setSendStatus("❌ " + error.message);
