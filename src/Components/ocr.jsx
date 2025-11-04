@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import flowchart from './flowchart';
 import { Link } from "react-router-dom";
+import LiveOCR from './liveOCR';
+import { useOCR } from './OCRContext';
+import {Send} from 'lucide-react';
+
 
 // ⚙️ CONFIGURATION - Your ngrok URL
 const API_PROXY_URL = "https://preanaphoral-arya-unthanked.ngrok-free.dev/api/artifact";
@@ -8,7 +11,7 @@ const API_PROXY_URL = "https://preanaphoral-arya-unthanked.ngrok-free.dev/api/ar
 // 🎧 Audio Button Component
 const AudioButton = ({ text }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
-
+  
   const speak = () => {
     window.speechSynthesis.cancel();
     if (!text) return;
@@ -28,6 +31,7 @@ const AudioButton = ({ text }) => {
     window.speechSynthesis.cancel();
     setIsSpeaking(false);
   };
+  
 
   return (
     <button
@@ -35,8 +39,9 @@ const AudioButton = ({ text }) => {
       className={`mt-3 w-full py-2 rounded-full text-white font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
         isSpeaking ? 'bg-red-600 hover:bg-red-700' : 'bg-indigo-600 hover:bg-indigo-700'
       }`}
-    >
+    ><Button>
       {isSpeaking ? 'Stop 🔊' : 'Listen 🔊'}
+      </Button>
     </button>
   );
 };
@@ -71,7 +76,7 @@ const MuseumApp = () => {
   const [sending, setSending] = useState(false);
   const [sendStatus, setSendStatus] = useState("");
   const [artifactData, setArtifactData] = useState(null);
-
+  const {ocrText} = useOCR();
   const handleInputChange = (e) => setInputText(e.target.value);
 
   const sendToN8N = async () => {
@@ -118,23 +123,32 @@ const extracted = {
   useEffect(() => {
     return () => window.speechSynthesis.cancel();
   }, []);
+  useEffect(() => {
+  if (ocrText) {
+    setInputText(ocrText);
+  }
+}, [ocrText]);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-indigo-600 to-purple-700 pb-8">
+    <div className="min-h-screen bg-[#1B1B1F] pb-8">
       {/* Header */}
       <div className="bg-white bg-opacity-95 p-5 shadow-lg sticky top-0 z-50 rounded-b-3xl">
-        <h1 className="text-3xl font-extrabold text-center text-indigo-700">🏛️ Museum Scanner</h1>
-        <p className="mt-2 text-sm text-gray-600 text-center">
+        <div className="flex">
+        <h1 className="text-3xl font-extrabold text-center text-black mb-5 text-shadow-2xl mx-auto">Muse Scanner</h1>
+        </div>
+        <p className="mt-2 text-sm text-gray-600 text-center mb-2">
           Enter artifact text to unlock their hidden stories
         </p>
-        <div className="ml-25"><Link to="/flowchart">Flowchart</Link></div>
-      </div>
 
+        <LiveOCR/>
+        
+      </div>
+      <div className="bg-white w-[6%] max-sm:w-[25%] py-2 px-2.5 mx-auto rounded-xl text-black font-bold hover:bg-black hover:text-white mt-5"><Link to="/flowchart">Flowchart</Link></div>
       {/* Body */}
-      <div className="bg-white m-5 rounded-3xl shadow-2xl overflow-hidden p-5">
+      <div className="bg-white m-5 rounded-3xl shadow-2xl overflow-hidden p-5 border border-black w-5/6 max-sm:w-full mx-auto">
         {/* Input Section */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-2">Enter Artifact Text:</label>
+          <label className="text-gray-700 font-semibold mb-2 flex justify-center text-md">Artifact Text</label>
           <textarea
             value={inputText}
             onChange={handleInputChange}
@@ -142,16 +156,19 @@ const extracted = {
             className="w-full h-32 p-4 border-2 border-indigo-300 rounded-xl focus:border-indigo-500 focus:outline-none resize-none text-gray-800"
           />
         </div>
+        
 
         {/* Send Button */}
         <button
           onClick={sendToN8N}
           disabled={sending}
-          className={`mt-4 w-full py-3 rounded-xl text-white font-bold text-lg shadow-lg transition-all duration-300 flex items-center justify-center gap-2 ${
-            sending ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
+          className={`mt-4 w-1/3 py-3 rounded-xl text-white font-bold text-lg shadow-lg transition-all duration-300 flex items-center justify-center gap-2 mx-auto drop-shadow-2xl ${
+            sending ? 'bg-gray-400 cursor-not-allowed' : 'bg-black hover:bg-white hover:text-black'
           }`}
         >
-          {sending ? "Sending..." : "Send to n8n"}
+          <Send size={20}/>
+          {sending ? "Scanning..." : "Scan"}
+         
         </button>
 
         {/* Status */}
@@ -165,13 +182,14 @@ const extracted = {
         {artifactData && (
           <div className="mt-6 pt-6 border-t-2 border-indigo-200">
             <h2 className="text-xl font-bold text-indigo-700 mb-4">📋 Artifact Details</h2>
-            <Dropdown title="📜 Artifact Name" content={artifactData.title} />
-            <Dropdown title="📝 Short Description" content={artifactData.shortDescription} />
-            <Dropdown title="📖 Story Behind the Artifact" content={artifactData.story} />
-            <Dropdown title="💡 Recommendations" content={artifactData.recommendations} />
+            <Dropdown title="Artifact Name" content={artifactData.title} />
+            <Dropdown title="Short Description" content={artifactData.shortDescription} />
+            <Dropdown title="Story Behind the Artifact" content={artifactData.story} />
+            <Dropdown title="Recommendations" content={artifactData.recommendations} />
           </div>
         )}
       </div>
+      
     </div>
   );
 };

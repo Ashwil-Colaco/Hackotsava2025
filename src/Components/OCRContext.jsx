@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 
 const OCRContext = createContext(null);
 
-export const OCRProvider = ({ children }) => {
+export function OCRProvider({ children }) {
   const [ocrText, setOCRText] = useState("");
 
   return (
@@ -10,7 +10,9 @@ export const OCRProvider = ({ children }) => {
       {children}
     </OCRContext.Provider>
   );
-};
+}
 
-
-export const useOCR = () => useContext(OCRContext);
+// eslint-disable-next-line react-refresh/only-export-components
+export function useOCR() {
+  return useContext(OCRContext);
+}
