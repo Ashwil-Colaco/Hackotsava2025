@@ -65,7 +65,7 @@ const LiveOCR = () => {
 
   return (
     <div >
-    <video ref={videoRef} autoPlay width={400} height={300} style={{marginTop:"0px"}} className="mx-auto"></video>
+    <video ref={videoRef} autoPlay width={400} height={300} style={{marginTop:"0px"}} className="mx-auto rounded-2xl drop-shadow-2xl"></video>
 
       <canvas
         ref={canvasRef}
